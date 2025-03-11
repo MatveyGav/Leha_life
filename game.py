@@ -1,9 +1,11 @@
 import pygame
 import sys
-from clases import Rectangle, Button
+from clases import Rectangle, Button, Bar
 
 # Инициализация Pygame
 pygame.init()
+
+
 
 def test(screen):
 # Полноэкранный режим
@@ -40,6 +42,13 @@ def test(screen):
         3: [Button(map_width + 50, 100, 200, 50, "Вариант 3.1", BLUE)]
     }
 
+
+    health_bar = Bar(
+        x=50, y=50, width=200, height=30,
+        max_value=100, color=RED, bg_color=BLACK,
+        outline_color=BLACK, outline_thickness=3
+    )
+
     # Основной цикл программы
     running = True
     selected_rectangle = None  # Выделенный прямоугольник
@@ -53,6 +62,11 @@ def test(screen):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Выход по нажатию Esc
                     running = False
+                elif event.key == pygame.K_UP:  # Увеличиваем значение шкалы
+                    health_bar.set_value(health_bar.current_value + 10)
+                elif event.key == pygame.K_DOWN:  # Уменьшаем значение шкалы
+                    health_bar.set_value(health_bar.current_value - 10)
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Левая кнопка мыши
                     # Проверяем клик в левой части
@@ -87,6 +101,8 @@ def test(screen):
         if show_options:
             for option in current_options:
                 option.draw(screen)
+
+        health_bar.draw(screen)
 
         # Обновление экрана
         pygame.display.flip()
