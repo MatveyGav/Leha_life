@@ -32,4 +32,4 @@
 5. Библиотека
 6. Зал
 8. Столовая
-9. 
+   https://i.pinimg.com/originals/78/02/e0/7802e05105c7650cc1f5526e41d14f0a.jpg
