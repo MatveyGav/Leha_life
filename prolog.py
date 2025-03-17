@@ -86,4 +86,4 @@ def prolog(screen):
         clock.tick(60)
 
     # Завершение работы PyGame
-    return "test"
+    return "game"

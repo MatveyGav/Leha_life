@@ -2,11 +2,12 @@ import pygame
 
 
 class Rectangle:
-    def __init__(self, x, y, width, height, color, id):
+    def __init__(self, x, y, width, height, color, id, scene=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.clicked = False
         self.id = id
+        self.scene = scene
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
@@ -18,10 +19,11 @@ class Rectangle:
 
 
 class Button:
-    def __init__(self, x, y, width, height, text, color):
+    def __init__(self, x, y, width, height, text, color, scene=None):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
+        self.scene = scene
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
@@ -44,13 +46,13 @@ class Human:
         self.money = 100
         self.sanity = 100
 
-    def check_parms(self):
-        if self.eat == 0 or self.health == 0 or self.energy == 0 or self.money == 0 or self.sanity == 0:
-            return False
-        return True
-
-    def __str__(self):
-        return str(self.eat) + " " + str(self.health) + " " + str(self.energy) + " " + str(self.money) + " " + str(self.sanity)
+    def edit_stats(self, stat, amount):
+        if hasattr(self, stat):
+            current_value = getattr(self, stat)
+            new_value = 0 if current_value + amount < 0 else 100 if current_value + amount > 100 else current_value + amount
+            setattr(self, stat, new_value)
+        else:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{stat}'")
 
 
 class Bar:

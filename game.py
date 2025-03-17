@@ -1,111 +1,59 @@
 import pygame
 import sys
-from clases import Rectangle, Button, Bar
+from clases import Rectangle, Bar, Human
 
 # Инициализация Pygame
 pygame.init()
 
 
-
-def test(screen):
-# Полноэкранный режим
+def game(screen, actions, Leha):
+    # Размеры окна
     WIDTH, HEIGHT = screen.get_size()  # Получаем размеры экрана
-    pygame.display.set_caption("Кликабельные прямоугольники с меню")
 
     # Цвета
     WHITE = (255, 255, 255)
-    RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
+    RED = (255, 0, 0)
     BLACK = (0, 0, 0)
 
-    # Разделение экрана на левую и правую части
-    map_width = WIDTH // 2  # Левая половина экрана
-    map_height = HEIGHT
+    # Создание окна
+    pygame.display.set_caption("Кликабельные прямоугольники")
 
-
-
-    # Создаем список прямоугольников в левой части
+    # Создание списка прямоугольников
     rectangles = [
-        Rectangle(100, 100, 150, 100, RED, 1),
-        Rectangle(300, 200, 120, 80, RED, 2),
-        Rectangle(500, 300, 200, 150, RED, 3)
+        Rectangle(100, 100, 150, 100, BLUE, 1, "bank_1"),
+        Rectangle(400, 300, 200, 150, RED, 2, "home_1"),
+        Rectangle(50, 400, 100, 50, BLUE, 3)
     ]
 
-    # Словарь с вариантами для каждого прямоугольника
-    options_dict = {
-        1: [Button(map_width + 50, 100, 200, 50, "Вариант 1.1", BLUE),
-            Button(map_width + 50, 200, 200, 50, "Вариант 1.2", BLUE)],
-        2: [Button(map_width + 50, 100, 200, 50, "Вариант 2.1", BLUE),
-            Button(map_width + 50, 200, 200, 50, "Вариант 2.2", BLUE),
-            Button(map_width + 50, 300, 200, 50, "Вариант 2.3", BLUE)],
-        3: [Button(map_width + 50, 100, 200, 50, "Вариант 3.1", BLUE)]
-    }
-
-
-    health_bar = Bar(
-        x=50, y=50, width=200, height=30,
-        max_value=100, color=RED, bg_color=BLACK,
-        outline_color=BLACK, outline_thickness=3
-    )
+    health_bar = Bar(740, 25, 500, 20, 100, RED, WIDTH, BLACK)
 
     # Основной цикл программы
     running = True
-    selected_rectangle = None  # Выделенный прямоугольник
-    show_options = False  # Показывать ли варианты в правой части
-    current_options = []  # Текущие варианты для выбранного прямоугольника
-
     while running:
+        # Обработка событий
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:  # Выход по нажатию Esc
-                    running = False
-                elif event.key == pygame.K_UP:  # Увеличиваем значение шкалы
-                    health_bar.set_value(health_bar.current_value + 10)
-                elif event.key == pygame.K_DOWN:  # Уменьшаем значение шкалы
-                    health_bar.set_value(health_bar.current_value - 10)
-
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Левая кнопка мыши
-                    # Проверяем клик в левой части
-                    for rect in rectangles:
-                        if rect.check_click(event.pos):
-                            # Сбрасываем цвет всех прямоугольников
-                            for r in rectangles:
-                                r.color = RED
-                            # Выделяем выбранный прямоугольник
-                            rect.color = GREEN
-                            selected_rectangle = rect
-                            show_options = True  # Показываем варианты в правой части
-                            current_options = options_dict.get(rect.id, [])  # Загружаем варианты для этого прямоугольника
+                # Получаем позицию клика
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                # Проверяем, попал ли клик в какой-либо прямоугольник
+                for rect in rectangles:
+                    if rect.check_click((mouse_x, mouse_y)):
+                        return rect.scene
 
-                    # Проверяем клик в правой части (если варианты отображаются)
-                    if show_options:
-                        for option in current_options:
-                            if option.check_click(event.pos):
-                                print(f"Выбран прямоугольник {selected_rectangle.id} с вариантом: {option.text}")
-
-        # Очистка экрана
+        # Отрисовка фона
         screen.fill(WHITE)
 
-        # Отрисовка всех прямоугольников в левой части
+        # Отрисовка всех прямоугольников
         for rect in rectangles:
             rect.draw(screen)
-
-        # Отрисовка разделительной линии между картой и правой частью
-        pygame.draw.line(screen, BLACK, (map_width, 0), (map_width, HEIGHT), 2)
-
-        # Отрисовка вариантов в правой части (если нужно)
-        if show_options:
-            for option in current_options:
-                option.draw(screen)
 
         health_bar.draw(screen)
 
         # Обновление экрана
         pygame.display.flip()
 
-    # Завершение работы
+    # Завершение работы Pygame
     return
