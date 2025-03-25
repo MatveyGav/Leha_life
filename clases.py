@@ -163,10 +163,11 @@ class Bar:
 
 
 class Scene:
-    def __init__(self, screen, background_image, buttons=None, Leha=None):
+    def __init__(self, screen, background_image, buttons, actions, Leha):
         self.screen = screen
         # Масштабируем фоновое изображение под размеры экрана
         self.background = pygame.transform.scale(pygame.image.load(background_image), (screen.get_width(), screen.get_height()))
+        self.actions = actions
         self.buttons = buttons
         self.WHITE = (255, 255, 255)
         self.GRAY = (200, 200, 200, 128)
@@ -211,7 +212,7 @@ class Scene:
         while running:
             running = self.handle_events()
             if running != True:
-                return running
+                return running, self.actions, self.Leha
             self.draw()
             self.Leha.display_stats(self.screen)
             pygame.display.flip()
